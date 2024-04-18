@@ -1,21 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/message')
-      .then(response => response.text())
-      .then(data => setMessage(data))
-      .catch(error => console.log(error));
-  }, []);
+    async function fetchData() {
+      try {
+        const response = await axios.get('http://localhost:3001/api/message');
+
+        const { message } = response.data;
+
+        setMessage(message);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    fetchData();
+
+  }, []); 
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>{message}</h1>
-      </header>
+    <div>
+      <h1>Message from Flask:</h1>
+      <p>{message}</p>
     </div>
   );
 }
