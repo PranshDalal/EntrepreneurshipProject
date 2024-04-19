@@ -1,31 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Route, NavLink, Routes } from 'react-router-dom';
 
+//Importing all the components
+import Home from './Components/Home';
+import Questions from './Components/Questions';
+
+
+//Importing CSS file
+import './App.css';
+
+//Creating navbar using Router
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await axios.get('http://localhost:3001/api/message');
-
-        const { message } = response.data;
-
-        setMessage(message);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    fetchData();
-
-  }, []); 
-
   return (
-    <div>
-      <h1>Message from Flask:</h1>
-      <p>{message}</p>
-    </div>
+    <Router>
+      <div className="App">
+        <nav className="navbar">
+          <ul>
+            <li>
+              <NavLink to="/" activeclassname="active">
+                Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/questions" activeclassname="active">
+                Questions
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/questions" element={<Questions />}  />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
