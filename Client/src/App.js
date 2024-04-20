@@ -23,7 +23,7 @@ function App() {
             </li>
             <li>
               <NavLink to="/questions" activeclassname="active">
-                Questions
+                Quiz
               </NavLink>
             </li>
           </ul>
