@@ -1,8 +1,14 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, jsonify, request, session
+from flask_cors import CORS, cross_origin
+from flask_bcrypt import Bcrypt
+from models import db, User
 import requests
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'testing'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
+
 CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
 
 # https://opentdb.com/api_config.php
@@ -16,9 +22,58 @@ response_code_messages = [
     "Rate Limit",
 ]
 
+SQLALCHEMY_TRACK_NOTIFICATIONS = True
+SQLALCHEMY_ECHO = True
+
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
 @app.route("/helloworld", methods=['GET'])
 def helloworld():
     return jsonify({"message": "Hello World!"})
+
+@app.route("/signup", methods=['POST'])
+def signup():
+    email = request.json["email"]
+    password = request.json["password"]
+
+    user_exists = User.query.filter_by(email=email).first() is not None
+
+    if user_exists:
+        return jsonify({"Error": "Email already exists"})
+    
+    hashed_password = Bcrypt.generate_password_hash(password)
+    new_user = User(email=email, password=hashed_password)
+    db.session.commit()
+
+    session["user_id"] = new_user.id
+    return jsonify({
+        "id": new_user.id,
+        "email": new_user.email
+})
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    email = request.json["email"]
+    password = request.json["password"]
+  
+    user = User.query.filter_by(email=email).first()
+  
+    if user is None:
+        return jsonify({"error": "Unauthorized Access"}), 401
+  
+    if not Bcrypt.check_password_hash(user.password, password):
+        return jsonify({"error": "Unauthorized"}), 401
+      
+    session["user_id"] = user.id
+  
+    return jsonify({
+        "id": user.id, 
+    })
+
+
 
 # Category must be a number. Type is either "boolean" or "multiple"
 # Example request: /api/question/multiple/25/easy
