@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, NavLink, Routes } from 'react-router-dom';
 
 //Importing all the components
-import Home from './Components/Home';
-import Questions from './Components/Questions';
+import Home from './Components/Home/Home';
+import Questions from './Components/Quiz/Questions';
 
 
 //Importing CSS file
@@ -23,7 +23,7 @@ function App() {
             </li>
             <li>
               <NavLink to="/questions" activeclassname="active">
-                Questions
+                Quiz
               </NavLink>
             </li>
           </ul>
