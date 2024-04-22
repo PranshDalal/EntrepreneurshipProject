@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {decode} from 'html-entities';
 import axios from 'axios';
 import './Questions.css';
 
@@ -73,7 +74,7 @@ const Questions = () => {
       ) : questionData && (
         <div className={`question-result`}>
           <h2>Question:</h2>
-          <p>{questionData.question}</p>
+          <p>{decode(questionData.question)}</p>
           <h3>Options:</h3>
           <div className="options-container">
             {questionData.incorrect_answers.map((answer, index) => (
