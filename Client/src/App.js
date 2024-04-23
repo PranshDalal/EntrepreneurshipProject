@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, NavLink, Routes } from 'react-router-do
 //Importing all the components
 import Home from './Components/Home/Home';
 import Questions from './Components/Quiz/Questions';
+import Login from './Components/Login/Login';
+import Register from './Components/Register/Register';
 
 
 //Importing CSS file
@@ -22,6 +24,16 @@ function App() {
               </NavLink>
             </li>
             <li>
+              <NavLink to="/register" activeclassname="active">
+                Register
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/login" activeclassname="active">
+                Login
+              </NavLink>
+            </li>
+            <li>
               <NavLink to="/questions" activeclassname="active">
                 Quiz
               </NavLink>
@@ -32,6 +44,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/questions" element={<Questions />}  />
+          <Route path="/register" element={<Register />}  />
+          <Route path="/login" element={<Login />}  />
         </Routes>
       </div>
     </Router>
