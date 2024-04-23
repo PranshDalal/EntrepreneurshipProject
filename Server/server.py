@@ -5,11 +5,13 @@ from models import db, User
 import requests
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
+CORS(app)
 
 app.config['SECRET_KEY'] = 'testing'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
 
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
+# CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
 
 # https://opentdb.com/api_config.php
 base_url = "https://opentdb.com/api.php"
@@ -35,16 +37,18 @@ def helloworld():
     return jsonify({"message": "Hello World!"})
 
 @app.route("/signup", methods=['POST'])
+# @cross_origin()
 def signup():
     email = request.json["email"]
     password = request.json["password"]
 
     user_exists = User.query.filter_by(email=email).first() is not None
+    # print(User.query.filter_by())
 
     if user_exists:
         return jsonify({"Error": "Email already exists"})
     
-    hashed_password = Bcrypt.generate_password_hash(password)
+    hashed_password = bcrypt.generate_password_hash(password, 10)
     new_user = User(email=email, password=hashed_password)
     db.session.commit()
 
@@ -52,9 +56,10 @@ def signup():
     return jsonify({
         "id": new_user.id,
         "email": new_user.email
-})
+    })
 
 @app.route("/login", methods=["POST"])
+# @cross_origin()
 def login_user():
     email = request.json["email"]
     password = request.json["password"]
@@ -64,7 +69,7 @@ def login_user():
     if user is None:
         return jsonify({"error": "Unauthorized Access"}), 401
   
-    if not Bcrypt.check_password_hash(user.password, password):
+    if not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Unauthorized"}), 401
       
     session["user_id"] = user.id
