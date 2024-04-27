@@ -36,19 +36,20 @@ with app.app_context():
 def helloworld():
     return jsonify({"message": "Hello World!"})
 
+
 @app.route("/signup", methods=['POST'])
-# @cross_origin()
 def signup():
     email = request.json["email"]
     password = request.json["password"]
 
-    user_exists = User.query.filter_by(email=email) is not None
+    user_exists = User.query.filter_by(email=email).first() is not None
 
     if user_exists:
-        return jsonify({"Error": "Email already exists"})
+        return jsonify({"error": "Email already exists"}), 400
     
-    hashed_password = bcrypt.generate_password_hash(password, 10)
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(email=email, password=hashed_password)
+    db.session.add(new_user)
     db.session.commit()
 
     session["user_id"] = new_user.id
@@ -57,13 +58,18 @@ def signup():
         "email": new_user.email
     })
 
+
 @app.route("/login", methods=["POST"])
-# @cross_origin()
 def login_user():
     email = request.json["email"]
     password = request.json["password"]
-  
-    user = User.query.filter_by(email=email)
+    print("Email:", email)
+
+    user_query = User.query.filter_by(email=email)
+    print(user_query)
+    user = user_query.first()
+    print(user)
+
   
     if user is None:
         return jsonify({"error": "Unauthorized Access"}), 401
