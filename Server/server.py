@@ -42,8 +42,7 @@ def signup():
     email = request.json["email"]
     password = request.json["password"]
 
-    user_exists = User.query.filter_by(email=email).first() is not None
-    # print(User.query.filter_by())
+    user_exists = User.query.filter_by(email=email) is not None
 
     if user_exists:
         return jsonify({"Error": "Email already exists"})
@@ -64,7 +63,7 @@ def login_user():
     email = request.json["email"]
     password = request.json["password"]
   
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email)
   
     if user is None:
         return jsonify({"error": "Unauthorized Access"}), 401
