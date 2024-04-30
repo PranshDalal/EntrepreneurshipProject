@@ -5,11 +5,13 @@ from models import db, User
 import requests
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
+CORS(app)
 
 app.config['SECRET_KEY'] = 'testing'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
 
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
+# CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
 
 # https://opentdb.com/api_config.php
 base_url = "https://opentdb.com/api.php"
@@ -34,6 +36,7 @@ with app.app_context():
 def helloworld():
     return jsonify({"message": "Hello World!"})
 
+
 @app.route("/signup", methods=['POST'])
 def signup():
     email = request.json["email"]
@@ -42,35 +45,44 @@ def signup():
     user_exists = User.query.filter_by(email=email).first() is not None
 
     if user_exists:
-        return jsonify({"Error": "Email already exists"})
+        return jsonify({"error": "This email is already in use"}), 400
     
-    hashed_password = Bcrypt.generate_password_hash(password)
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(email=email, password=hashed_password)
+    db.session.add(new_user)
     db.session.commit()
 
     session["user_id"] = new_user.id
     return jsonify({
         "id": new_user.id,
-        "email": new_user.email
-})
+        "email": new_user.email,
+        "status": "New account created"
+    })
+
 
 @app.route("/login", methods=["POST"])
 def login_user():
     email = request.json["email"]
     password = request.json["password"]
-  
-    user = User.query.filter_by(email=email).first()
+    print("Email:", email)
+
+    user_query = User.query.filter_by(email=email)
+    print(user_query)
+    user = user_query.first()
+    print(user)
+
   
     if user is None:
-        return jsonify({"error": "Unauthorized Access"}), 401
+        return jsonify({"error": "Incorrect email or password"}), 401
   
-    if not Bcrypt.check_password_hash(user.password, password):
-        return jsonify({"error": "Unauthorized"}), 401
+    if not bcrypt.check_password_hash(user.password, password):
+        return jsonify({"error": "Incorrect email or password"}), 401
       
     session["user_id"] = user.id
   
     return jsonify({
         "id": user.id, 
+        "status": "Successfuly logged in"
     })
 
 
