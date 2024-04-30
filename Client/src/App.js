@@ -5,6 +5,7 @@ import Home from './Components/Home/Home';
 import Questions from './Components/Quiz/Questions';
 import Login from './Components/Login/Login';
 import Register from './Components/Register/Register';
+import TicTacToeGame from './Components/TicTacToe/TicTacToe';
 
 import './App.css';
 
@@ -34,6 +35,11 @@ function App() {
                 Register
               </NavLink>
             </li>
+            <li>
+              <NavLink to="/tictactoe" activeclassname="active">
+                Tic Tac Toe
+              </NavLink>
+            </li>
           </ul>
         </nav>
 
@@ -42,6 +48,7 @@ function App() {
           <Route path="/questions" element={<Questions />}  />
           <Route path="/login" element={<Login />}  />
           <Route path="/register" element={<Register />}  />
+          <Route path="/tictactoe" element={<TicTacToeGame />}  />
         </Routes>
       </div>
     </Router>
