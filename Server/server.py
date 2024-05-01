@@ -46,17 +46,20 @@ def signup():
     user_exists = User.query.filter_by(email=email).first() is not None
 
     if user_exists:
-        return jsonify({"Error": "Email already exists"})
+        return jsonify({"error": "This email is already in use"}), 400
     
-    hashed_password = bcrypt.generate_password_hash(password)
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(email=email, password=hashed_password)
+    db.session.add(new_user)
     db.session.commit()
 
     session["user_id"] = new_user.id
     return jsonify({
         "id": new_user.id,
-        "email": new_user.email
-})
+        "email": new_user.email,
+        "status": "New account created",
+        "points": new_user.points
+    })
 
 @app.route("/login", methods=["POST"])
 def login_user():
@@ -77,10 +80,12 @@ def login_user():
         return jsonify({"error": "Incorrect email or password"}), 401
       
     session["user_id"] = user.id
+    print(user.points)
   
     return jsonify({
         "id": user.id, 
-        "status": "Successfuly logged in"
+        "status": "Successfuly logged in",
+        "points": user.points
     })
 
 
