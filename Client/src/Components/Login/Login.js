@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import './Login.css'
+import '../../styles/common.css'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,27 +12,27 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3001/login', { email, password });
-      setLoginStatus(response.data.status); 
+      setLoginStatus(response.data.status);
     } catch (error) {
-      setLoginStatus(error.response.data.error); 
+      setLoginStatus(error.response.data.error);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div class="register-login-container">
       <h2>Login</h2>
       {loginStatus && <p>{loginStatus}</p>}
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '1rem' }}>
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} />
+        <div class="bottom-margin-rem-1">
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} class="input-field" />
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} />
+        <div class="bottom-margin-rem-1">
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} class="input-field" />
         </div>
-        <button type="submit" style={{ width: '100%', padding: '0.5rem', backgroundColor: '#007bff', color: '#fff', border: 'none' }}>Login</button>
+        <button type="submit" class="button center">Login</button>
       </form>
-      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-        Don't have an account? <Link to="/register" style={{ color: '#007bff', textDecoration: 'none' }}>Register</Link>
+      <div class="top-margin-rem-1 center">
+        Don't have an account? <Link to="/register" class="link">Register</Link>
       </div>
     </div>
   );
