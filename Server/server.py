@@ -6,6 +6,8 @@ from models import db, User
 import requests
 import random
 
+print("Hello world")
+
 app = Flask(__name__)
 app.secret_key = "hello"
 bcrypt = Bcrypt(app)
