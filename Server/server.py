@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request
+from flask import session
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 from models import db, User
@@ -6,6 +7,7 @@ import requests
 import random
 
 app = Flask(__name__)
+app.secret_key = "hello"
 bcrypt = Bcrypt(app)
 CORS(app)
 
@@ -79,7 +81,10 @@ def login_user():
     if not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Incorrect email or password"}), 401
       
-    session["user_id"] = user.id
+    session["user.id"] = user.id
+
+    print("User ID in session:", session.get("user_id"))
+
     print(user.points)
   
     return jsonify({
@@ -87,6 +92,12 @@ def login_user():
         "status": "Successfuly logged in",
         "points": user.points
     })
+
+def is_logged_in():
+    if "user_id" in session:
+        print("Logged in")
+    else:
+        print("Not logged in")
 
 
 questions = {
@@ -165,6 +176,8 @@ def computer_move():
 def tictactoe_response():
 
     global current_player, current_question, board
+
+    is_logged_in()
 
     if current_question is None or request.method == 'GET':
         current_question = random.choice(list(questions.keys()))
