@@ -69,33 +69,6 @@ const Questions = () => {
         </button>
       </form>
       {error && <p className="error-message">{error}</p>}
-      {loading ? (
-        <p>Loading...</p>
-      ) : questionData && (
-        <div className={`question-result`}>
-          <h2>Question:</h2>
-          <p>{decode(questionData.question)}</p>
-          <h3>Options:</h3>
-          <div className="options-container">
-            {questionData.incorrect_answers.map((answer, index) => (
-              <button
-                key={index}
-                className={`option-button ${selectedAnswer === answer ? 'selected' : ''}`}
-                onClick={() => handleAnswerSelection(answer)}
-              >
-                {answer}
-              </button>
-            ))}
-            <button
-              className={`option-button ${selectedAnswer === questionData.correct_answer ? 'selected' : ''}`}
-              onClick={() => handleAnswerSelection(questionData.correct_answer)}
-            >
-              {questionData.correct_answer}
-            </button>
-          </div>
-          {showCorrectAnswer && <p>Correct Answer: {questionData.correct_answer}</p>}
-        </div>
-      )}
     </div>
   );
 };

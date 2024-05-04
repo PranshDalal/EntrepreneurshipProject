@@ -1,23 +1,25 @@
-from flask import Flask, jsonify, request
-from flask import session
+from flask import Flask, jsonify, request, session, redirect, url_for
+from flask_session import Session
 from flask_cors import CORS, cross_origin
 from flask_bcrypt import Bcrypt
 from models import db, User
 import requests
 import random
 
+
 print("Hello world")
 
 app = Flask(__name__)
 app.secret_key = "hello"
 bcrypt = Bcrypt(app)
-CORS(app)
+CORS(app, origins='*', supports_credentials=True) 
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+app.config.from_object(__name__)
+Session(app)
 
-
-app.config['SECRET_KEY'] = 'testing'
+app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
-
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:3001"]}})
 
 # https://opentdb.com/api_config.php
 base_url = "https://opentdb.com/api.php"
@@ -37,6 +39,12 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+
+def is_logged_in():
+    if session.get("user_id"):
+        print("Logged in")
+    else:
+        print("Not logged in")
 
 @app.route("/helloworld", methods=['GET'])
 def helloworld():
@@ -83,7 +91,9 @@ def login_user():
     if not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Incorrect email or password"}), 401
       
-    session["user.id"] = user.id
+    session["user_id"] = user.id
+    print(session)
+    session.modified = True
 
     print("User ID in session:", session.get("user_id"))
 
@@ -95,11 +105,6 @@ def login_user():
         "points": user.points
     })
 
-def is_logged_in():
-    if "user_id" in session:
-        print("Logged in")
-    else:
-        print("Not logged in")
 
 
 questions = {
@@ -178,7 +183,7 @@ def computer_move():
 def tictactoe_response():
 
     global current_player, current_question, board
-
+    session.modified = True
     is_logged_in()
 
     if current_question is None or request.method == 'GET':
@@ -201,6 +206,7 @@ def tictactoe_response():
                     board[random_position] = 'X'
 
                     if check_win('X'):
+                        questions.clear()
                         return jsonify({
                             'message': 'You win!',
                             'board': board,
@@ -208,6 +214,7 @@ def tictactoe_response():
                         }), 200
 
                     if is_board_full():
+                        questions.clear()
                         return jsonify({
                             'message': 'It\'s a draw!',
                             'board': board,
@@ -220,6 +227,7 @@ def tictactoe_response():
                         board[computer_position] = 'O'
 
                         if check_win('O'):
+                            questions.clear()
                             return jsonify({
                                 'message': 'Computer wins!',
                                 'board': board,
@@ -229,6 +237,7 @@ def tictactoe_response():
                     current_player = 'X'
                     current_question = random.choice(list(questions.keys()))
                 else:
+                    questions.clear()
                     return jsonify({
                         'message': 'It\'s a draw!',
                         'board': board,

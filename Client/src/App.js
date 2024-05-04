@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, NavLink, Routes } from 'react-router-dom';
 
-import Home from './Components/Home/Home';
-import Questions from './Components/Quiz/Questions';
-import Login from './Components/Login/Login';
-import Register from './Components/Register/Register';
-import TicTacToeGame from './Components/TicTacToe/TicTacToe';
+import Home from './Pages/Home/Home';
+import Questions from './Pages/Quiz/Questions';
+import Login from './Pages/Login/Login';
+import Register from './Pages/Register/Register';
+import TicTacToeGame from './Pages/TicTacToe/TicTacToe';
 
 import './App.css';
 

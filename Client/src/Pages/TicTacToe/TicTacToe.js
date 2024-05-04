@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TicTacToe.css';
-import {decode} from 'html-entities';
-
+import { decode } from 'html-entities';
+import axios from 'axios'; 
 function TicTacToeGame() {
   const [data, setData] = useState(null);
   const [answer, setAnswer] = useState('');
@@ -14,8 +14,8 @@ function TicTacToeGame() {
   }, []);
 
   const fetchData = () => {
-    fetch("http://localhost:3001/api/tictactoe/response")
-      .then(res => res.json())
+    axios.get("http://localhost:3001/api/tictactoe/response", { withCredentials: true }) 
+      .then(res => res.data)
       .then(data => {
         setData(data);
         setResponseMessage('');
@@ -77,6 +77,7 @@ function TicTacToeGame() {
   };
 
   return (
+    
     <div className="container">
       <h1 className="header">Tic Tac Toe</h1>
       <button className="how-to-play-btn" onClick={toggleInstructions}>How to Play</button>
