@@ -4,7 +4,7 @@ import Cookies from "js-cookie"
 
 import './Navbar.css'
 
-const Navbar = ({ handleLogout }) => {
+const Navbar = ({ handleLogout, userPoints }) => {
     // const sessionCookieExists = false;
     const sessionCookieExists = Cookies.get('session') !== undefined;
 
@@ -26,15 +26,24 @@ const Navbar = ({ handleLogout }) => {
     const loggedInItems = (
         <>
             <li>
-                <NavLink to="/tictactoe" activeclassname="active">
+                <NavLink to="/leaderboard" activeClassName="active">
+                    Leaderboard
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/tictactoe" activeClassName="active">
                     Tic Tac Toe
                 </NavLink>
+            </li>
+            <li>
+                <span className="points-text">Points: {userPoints}</span>
             </li>
             <li>
                 <button className="sign-out-btn" onClick={handleLogout}>Sign Out</button>
             </li>
         </>
     );
+    
 
     const guestItems = (
         <>

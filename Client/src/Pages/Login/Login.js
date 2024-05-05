@@ -5,7 +5,7 @@ import './Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState('');
 
@@ -14,7 +14,7 @@ const Login = () => {
     try {
       const response = await axios.post(
         'http://localhost:3001/login',
-        { email, password },
+        { username, password },
         { withCredentials: true } 
       );
       setLoginStatus(response.data.status); 
@@ -31,7 +31,7 @@ const Login = () => {
       {loginStatus && <p>{loginStatus}</p>}
       <form className="login-form" onSubmit={handleSubmit}>
         <div>
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="login-input" />
+          <input type="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="login-input" />
         </div>
         <div>
           <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="login-input" />

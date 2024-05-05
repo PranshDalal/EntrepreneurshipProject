@@ -41,6 +41,7 @@ function TicTacToeGame() {
         setResponseMessage(data.message);
         setAnswer('');
         setSelectedBox(-1);
+        window.location.reload()
       })
       .catch(error => console.error('Error submitting answer:', error));
   };

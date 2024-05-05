@@ -7,6 +7,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [registerStatus, setRegisterStatus] = useState('');
 
   const handleSubmit = async (e) => {
@@ -14,7 +15,7 @@ const Register = () => {
     try {
       const response = await axios.post(
         'http://localhost:3001/signup',
-        { email, password },
+        { email, password, username },
         { withCredentials: true } 
       );
       setRegisterStatus(response.data.status);
@@ -34,8 +35,12 @@ const Register = () => {
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="register-input" />
         </div>
         <div>
+          <input type="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="register-input" />
+        </div>
+        <div>
           <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="register-input" />
         </div>
+
         <button type="submit" className="register-button">Register</button>
       </form>
       <div className="login-link">

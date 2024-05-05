@@ -53,6 +53,7 @@ def helloworld():
 def signup():
     email = request.json["email"]
     password = request.json["password"]
+    username = request.json["username"]
 
     user_exists = User.query.filter_by(email=email).first() is not None
 
@@ -60,7 +61,7 @@ def signup():
         return jsonify({"error": "This email is already in use"}), 400
     
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(email=email, password=hashed_password)
+    new_user = User(email=email, password=hashed_password, username=username)
     db.session.add(new_user)
     db.session.commit()
 
@@ -74,17 +75,16 @@ def signup():
 
 @app.route("/login", methods=["POST"])
 def login_user():
-    email = request.json["email"]
+    username = request.json["username"]
     password = request.json["password"]
-    print("Email:", email)
 
-    user_query = User.query.filter_by(email=email)
+    user_query = User.query.filter_by(username=username)
     print(user_query)
     user = user_query.first()
     print(user)
 
     if user is None or not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"error": "Incorrect email or password"}), 401
+        return jsonify({"error": "Incorrect username or password"}), 401
     
     session["user_id"] = user.id
     print(session)
@@ -204,6 +204,12 @@ def tictactoe_response():
         if question == current_question:
             correct_answer = questions.get(question)
             if answer.lower() == correct_answer.lower():
+                user_id = session.get("user_id")
+                user = User.query.get(user_id)
+                user.points += 10
+                db.session.commit()
+                print(user.points)
+
                 current_player = 'X'
                 current_question = None
 
@@ -266,6 +272,31 @@ def tictactoe_response():
         'currentPlayer': current_player
     })
 
+@app.route('/points')
+def get_points():
+    user_id = session.get("user_id")
+    user = User.query.get(user_id)
+    return jsonify({
+        "points": user.points
+    })
+
+@app.route('/leaderboard')
+def get_leaderboard():
+    try:
+        users = User.query.order_by(User.points.desc()).all()
+        leaderboard = []
+        for user in users:
+            leaderboard.append({
+                'username': user.username,
+                'points': user.points
+            })
+
+        return jsonify({'leaderboard': leaderboard})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True, port=3001)
