@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, NavLink, Routes } from 'react-router-dom';
+import axios from 'axios';
 
 import Home from './Pages/Home/Home';
 import Questions from './Pages/Quiz/Questions';
@@ -10,6 +11,18 @@ import TicTacToeGame from './Pages/TicTacToe/TicTacToe';
 import './App.css';
 
 function App() {
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/logout', { withCredentials: true });
+      console.log(response.data.message);
+    } catch (error) {
+      console.error("Error logging out:", error.response.data.error);
+    }
+  }
+  
+
+
   return (
     <Router>
       <div className="App">
@@ -39,6 +52,9 @@ function App() {
               <NavLink to="/tictactoe" activeclassname="active">
                 Tic Tac Toe
               </NavLink>
+            </li>
+            <li>
+              <button className="sign-out-btn" onClick={handleLogout}>Sign Out</button>
             </li>
           </ul>
         </nav>

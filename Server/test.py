@@ -18,5 +18,10 @@ def get_session():
     stored_session = session.get("message", "no session was set")
     return f'<h3>{stored_session}</h3>'
 
+@app.route("/clear")
+def clear_session():
+    session.clear()
+    return "<h1>Session cleared</h1>"
+
 
 app.run(debug=True, port=5001)

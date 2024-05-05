@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import './Login.css'
+import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,20 +23,20 @@ const Login = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div className="login-container">
       <h2>Login</h2>
       {loginStatus && <p>{loginStatus}</p>}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '1rem' }}>
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} />
+      <form className="login-form" onSubmit={handleSubmit}>
+        <div>
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="login-input" />
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '0.5rem' }} />
+        <div>
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="login-input" />
         </div>
-        <button type="submit" style={{ width: '100%', padding: '0.5rem', backgroundColor: '#007bff', color: '#fff', border: 'none' }}>Login</button>
+        <button type="submit" className="login-button">Login</button>
       </form>
-      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-        Don't have an account? <Link to="/register" style={{ color: '#007bff', textDecoration: 'none' }}>Register</Link>
+      <div className="register-link">
+        Don't have an account? <Link to="/register">Register</Link>
       </div>
     </div>
   );

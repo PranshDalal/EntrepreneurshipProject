@@ -41,10 +41,7 @@ with app.app_context():
     db.create_all()
 
 def is_logged_in():
-    if session.get("user_id"):
-        print("Logged in")
-    else:
-        print("Not logged in")
+    return "user_id" in session and session["user_id"] is not None
 
 @app.route("/helloworld", methods=['GET'])
 def helloworld():
@@ -84,13 +81,9 @@ def login_user():
     user = user_query.first()
     print(user)
 
-  
-    if user is None:
+    if user is None or not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Incorrect email or password"}), 401
-  
-    if not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"error": "Incorrect email or password"}), 401
-      
+    
     session["user_id"] = user.id
     print(session)
     session.modified = True
@@ -104,6 +97,12 @@ def login_user():
         "status": "Successfuly logged in",
         "points": user.points
     })
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.clear()
+    return jsonify({"message": "Logged out"})
+
 
 
 
@@ -184,7 +183,9 @@ def tictactoe_response():
 
     global current_player, current_question, board
     session.modified = True
-    is_logged_in()
+
+    if not is_logged_in():
+        return jsonify({"error": "Unauthorized. Please log in."}), 401
 
     if current_question is None or request.method == 'GET':
         current_question = random.choice(list(questions.keys()))
