@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, NavLink, Routes, Redirect } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
 import Navbar from './Components/Navbar';
@@ -13,21 +13,24 @@ import TicTacToeGame from './Pages/TicTacToe/TicTacToe';
 import './App.css';
 
 function App() {
+  const [loggedOut, setLoggedOut] = useState(false);
+
   const handleLogout = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/logout', { withCredentials: true });
-      console.log(response.data.message);
+      await axios.get('http://localhost:3001/logout', { withCredentials: true });
+      window.location.reload()
+      setLoggedOut(true);
     } catch (error) {
       console.error("Error logging out:", error.response.data.error);
     }
   }
 
-
-
   return (
     <Router>
       <div className="App">
         <Navbar handleLogout={handleLogout} />
+
+        {loggedOut && <Navigate to="/" />}
 
         <Routes>
           <Route path="/" element={<Home />} />

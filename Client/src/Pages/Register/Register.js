@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Register.css';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [registerStatus, setRegisterStatus] = useState('');
@@ -17,6 +18,8 @@ const Register = () => {
         { withCredentials: true } 
       );
       setRegisterStatus(response.data.status);
+      navigate('/');
+      window.location.reload()
     } catch (error) {
       setRegisterStatus(error.response.data.error);
     }
