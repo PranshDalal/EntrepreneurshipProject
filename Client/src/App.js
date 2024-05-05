@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 
 import Navbar from './Components/Navbar';
@@ -29,8 +29,6 @@ function App() {
     <Router>
       <div className="App">
         <Navbar handleLogout={handleLogout} />
-
-        {loggedOut && <Navigate to="/" />}
 
         <Routes>
           <Route path="/" element={<Home />} />

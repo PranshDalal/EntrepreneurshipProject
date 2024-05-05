@@ -29,6 +29,7 @@ function TicTacToeGame() {
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include',
       body: JSON.stringify({
         question: data.question,
         answer: answer

@@ -185,11 +185,16 @@ def tictactoe_response():
 
     global current_player, current_question, board
     session.modified = True
-    if session.get("user_id") is None:
+    print(session.get("user_id"))
+    if not session.get("user_id"):
         return jsonify({"error": "Please log in first"}), 401
 
-    if current_question is None or request.method == 'GET':
-        current_question = random.choice(list(questions.keys()))
+
+    if not questions or current_question is None or request.method == 'GET':
+        if not questions:
+            current_question = None
+        else:
+            current_question = random.choice(list(questions.keys()))
 
     if request.method == 'POST':
         data = request.get_json()
