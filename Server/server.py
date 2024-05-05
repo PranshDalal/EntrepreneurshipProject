@@ -18,6 +18,8 @@ app.config["SESSION_TYPE"] = "filesystem"
 app.config.from_object(__name__)
 Session(app)
 
+# NOTE: ADDED THIS SESSION COOKIE HTTPONLY THING BEC COULDN'T CHECK IF SIGNED IN FROM CLIENT
+app.config.update(SESSION_COOKIE_HTTPONLY=False)
 app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
 
