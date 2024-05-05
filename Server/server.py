@@ -183,9 +183,8 @@ def tictactoe_response():
 
     global current_player, current_question, board
     session.modified = True
-
-    if not is_logged_in():
-        return jsonify({"error": "Unauthorized. Please log in."}), 401
+    if session.get("user_id") is None:
+        return jsonify({"error": "Please log in first"}), 401
 
     if current_question is None or request.method == 'GET':
         current_question = random.choice(list(questions.keys()))
