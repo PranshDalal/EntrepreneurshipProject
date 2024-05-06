@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './TicTacToe.css';
 import { decode } from 'html-entities';
 import axios from 'axios'; 
+
 function TicTacToeGame() {
   const [data, setData] = useState(null);
   const [answer, setAnswer] = useState('');
@@ -41,7 +42,6 @@ function TicTacToeGame() {
         setResponseMessage(data.message);
         setAnswer('');
         setSelectedBox(-1);
-        window.location.reload()
       })
       .catch(error => console.error('Error submitting answer:', error));
   };
@@ -78,6 +78,20 @@ function TicTacToeGame() {
     setShowInstructions(prevState => !prevState);
   };
 
+  const restartGame = () => {
+    fetch("http://localhost:3001/restart-game", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(() => {
+        fetchData(); // Fetch new game data after restarting
+      })
+      .catch(error => console.error('Error restarting game:', error));
+  };
+
   return (
     
     <div className="container">
@@ -95,6 +109,7 @@ function TicTacToeGame() {
       {data ? (
         <div className="game-container">
           <div className="game-info">
+          <button className="restart-btn" onClick={restartGame}>Restart Game</button>
             <p>{data.message}</p>
             {data.question && <p className="question">{decode(data.question)}</p>}
             {data.question && (

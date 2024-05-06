@@ -272,6 +272,19 @@ def tictactoe_response():
         'currentPlayer': current_player
     })
 
+@app.route("/restart-game", methods=["POST"])
+def restart_game():
+    global current_player, current_question, board, questions
+    
+    current_player = 'X'
+    current_question = None
+    board = [' '] * 9
+    questions.clear()
+
+    
+    return jsonify({"message": "Game restarted successfully"}), 200
+
+
 @app.route('/points')
 def get_points():
     user_id = session.get("user_id")
