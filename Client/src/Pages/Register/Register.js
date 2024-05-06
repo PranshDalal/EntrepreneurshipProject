@@ -16,15 +16,19 @@ const Register = () => {
       const response = await axios.post(
         'http://localhost:3001/signup',
         { email, password, username },
-        { withCredentials: true } 
+        { 
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        } 
       );
       setRegisterStatus(response.data.status);
       navigate('/');
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
-      setRegisterStatus(error.response.data.error);
+      console.error(error.response);
     }
   };
+  
 
   return (
     <div className="register-container">

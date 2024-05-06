@@ -9,4 +9,4 @@ class User(db.Model):
     email = db.Column(db.String(150), unique=True)
     username = db.Column(db.String(150), unique=True)
     password = db.Column(db.Text, nullable=False)
-    points = db.Column(db.Integer, default=0)
+    points = db.Column(db.Integer, default=10)

@@ -5,7 +5,6 @@ import Cookies from "js-cookie"
 import './Navbar.css'
 
 const Navbar = ({ handleLogout, userPoints }) => {
-    // const sessionCookieExists = false;
     const sessionCookieExists = Cookies.get('session') !== undefined;
 
     const commonItems = (

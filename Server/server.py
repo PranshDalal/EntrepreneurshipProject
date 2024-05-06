@@ -12,7 +12,7 @@ print("Hello world")
 app = Flask(__name__)
 app.secret_key = "hello"
 bcrypt = Bcrypt(app)
-CORS(app, origins='*', supports_credentials=True) 
+CORS(app, supports_credentials=True)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config.from_object(__name__)
@@ -49,7 +49,7 @@ def is_logged_in():
 def helloworld():
     return jsonify({"message": "Hello World!"})
 
-@app.route("/signup", methods=['POST'])
+@app.route("/signup", methods=['POST', 'GET'])
 def signup():
     email = request.json["email"]
     password = request.json["password"]
@@ -275,10 +275,17 @@ def tictactoe_response():
 @app.route('/points')
 def get_points():
     user_id = session.get("user_id")
-    user = User.query.get(user_id)
-    return jsonify({
-        "points": user.points
-    })
+    if user_id:
+        user = User.query.get(user_id)
+        if user:
+            return jsonify({
+                "points": user.points
+            })
+        else:
+            return jsonify({"error": "User not found"}), 404
+    else:
+        return jsonify({"error": "User not logged in"}), 401
+
 
 @app.route('/leaderboard')
 def get_leaderboard():
