@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TicTacToe.css';
 import { decode } from 'html-entities';
-import axios from 'axios'; 
+import axios from 'axios';
 
 function TicTacToeGame() {
   const [data, setData] = useState(null);
@@ -15,7 +15,7 @@ function TicTacToeGame() {
   }, []);
 
   const fetchData = () => {
-    axios.get("http://localhost:3001/api/tictactoe/response", { withCredentials: true }) 
+    axios.get("http://localhost:3001/api/tictactoe/response", { withCredentials: true })
       .then(res => res.data)
       .then(data => {
         setData(data);
@@ -93,7 +93,7 @@ function TicTacToeGame() {
   };
 
   return (
-    
+
     <div className="container">
       <h1 className="header">Tic Tac Toe</h1>
       <button className="how-to-play-btn" onClick={toggleInstructions}>How to Play</button>
@@ -109,7 +109,7 @@ function TicTacToeGame() {
       {data ? (
         <div className="game-container">
           <div className="game-info">
-          <button className="restart-btn" onClick={restartGame}>Restart Game</button>
+            <button className="restart-btn" onClick={restartGame}>Restart Game</button>
             <p>{data.message}</p>
             {data.question && <p className="question">{decode(data.question)}</p>}
             {data.question && (
