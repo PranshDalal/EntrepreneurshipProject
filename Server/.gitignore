@@ -1,3 +1,6 @@
 /.venv
-__pycache__
-instance
+*.pyc
+*.pyo
+__pycache__/
+instance/
+flask_session/
