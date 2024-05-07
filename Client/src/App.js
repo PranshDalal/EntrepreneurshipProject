@@ -12,6 +12,7 @@ import Register from './Pages/Register/Register';
 import TicTacToeGame from './Pages/TicTacToe/TicTacToe';
 import Leaderboard from './Pages/Leaderboard/Leaderboard';
 
+
 import './App.css';
 
 export const AuthContext = createContext();
@@ -59,6 +60,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path='/leaderboard' element={<Leaderboard />} />
             <Route path="/tictactoe" element={<TicTacToeGame />} />
+            <Route path="/hangmangame" element={<Hangman />} />
 
           </Routes>
         </div>

@@ -314,6 +314,87 @@ def get_leaderboard():
         return jsonify({'leaderboard': leaderboard})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+hangman_word = None
+hangman_word_state = None
+words = []
+hangman_figure = [
+    " ________     ",
+    "|        |    ",
+    "|        0    ",
+    "|       /|\   ",
+    "|       / \   ",
+    "|             ",
+    "=============="
+]
+incorrect_guesses = 0
+max_attempts = 6
+
+def start_new_game():
+    for question, answer in questions.items():
+        words.append(answer.upper())
+        
+    global hangman_word, hangman_word_state, hangman_figure, incorrect_guesses
+    hangman_word = random.choice(words)
+    hangman_word_state = ['_'] * len(hangman_word)
+    incorrect_guesses = 0
+
+
+def make_guess(guess):
+    global hangman_word, hangman_word_state, incorrect_guesses
+    if guess in hangman_word:
+        for i in range(len(hangman_word)):
+            if hangman_word[i] == guess:
+                hangman_word_state[i] = guess
+        return True
+    else:
+        incorrect_guesses += 1
+        return False
+
+@app.route("/api/hangman/start", methods=['GET'])
+def start_game():
+    start_new_game()
+    return jsonify({"message": "New game started.", "hangman_word_state": hangman_word_state})
+
+@app.route("/api/hangman/start_with_question", methods=['GET'])
+def start_game_with_question():
+    global hangman_word, hangman_word_state, hangman_figure, incorrect_guesses
+
+    question, answer = random.choice(list(questions.items()))
+
+    hangman_word = answer()
+    hangman_word_state = ['_'] * len(hangman_word)
+    incorrect_guesses = 0
+
+    return jsonify({"message": "New game started with a question.", "question": question, "hangman_word_state": hangman_word_state})
+
+@app.route("/api/hangman/guess", methods=['POST'])
+def guess():
+    global hangman_word, hangman_word_state, hangman_figure, incorrect_guesses
+    data = request.get_json()
+    guess = data.get('guess', '').upper()
+
+    if not guess.isalpha() or len(guess) != 1:
+        return jsonify({"error": "Invalid guess. Please enter a single letter."}), 400
+
+    if not hangman_word:
+        return jsonify({"error": "Game has not started. Please start a new game."}), 400
+
+    if guess in hangman_word_state:
+        return jsonify({"message": "You already guessed that letter.", "hangman_word_state": hangman_word_state}), 200
+
+    if make_guess(guess):
+        if '_' not in hangman_word_state:
+            return jsonify({"message": "Congratulations! You won!", "hangman_word": hangman_word, "hangman_word_state": hangman_word_state}), 200
+        else:
+            return jsonify({"message": "Correct guess!", "hangman_word_state": hangman_word_state}), 200
+    else:
+        if incorrect_guesses >= max_attempts:
+            return jsonify({"message": "Game over. You lost!", "hangman_word": hangman_word, "hangman_word_state": hangman_word_state, "hangman_figure": hangman_figure}), 200
+        else:
+            return jsonify({"message": "Incorrect guess!", "hangman_word_state": hangman_word_state, "hangman_figure": hangman_figure[:incorrect_guesses + 1]}), 200
+
 
 
     
