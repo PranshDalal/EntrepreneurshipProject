@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import { AuthContext } from '../../App';
+
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
+  const { setLoggedIn } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,9 +21,9 @@ const Login = () => {
         { username, password },
         { withCredentials: true } 
       );
-      setLoginStatus(response.data.status); 
+      setLoginStatus(response.data.status);
+      setLoggedIn(true);
       navigate('/');
-      window.location.reload()
     } catch (error) {
       setLoginStatus(error.response.data.error); 
     }

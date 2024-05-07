@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import { AuthContext } from '../../App';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './Register.css';
 
 const Register = () => {
+  const { setLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,9 +24,11 @@ const Register = () => {
         } 
       );
       setRegisterStatus(response.data.status);
+      setLoggedIn(true);
       navigate('/');
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
+      setRegisterStatus(error.response.data.error);
       console.error(error.response);
     }
   };
@@ -33,7 +37,7 @@ const Register = () => {
   return (
     <div className="register-container">
       <h2>Register</h2>
-      {registerStatus && <p>{registerStatus}</p>}
+      {{registerStatus} && <p>{registerStatus}</p>}
       <form className="register-form" onSubmit={handleSubmit}>
         <div>
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="register-input" />
