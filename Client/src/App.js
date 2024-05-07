@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from "js-cookie";
 
 import Navbar from './Components/Navbar';
 
@@ -14,7 +15,8 @@ import Leaderboard from './Pages/Leaderboard/Leaderboard';
 import './App.css';
 
 function App() {
-  const [loggedOut, setLoggedOut] = useState(false);
+  const sessionCookieExists = Cookies.get('session') !== undefined;
+  const [loggedIn, setLoggedIn] = useState(sessionCookieExists);
   const [points, setPoints] = useState('');
 
   useEffect(() => {
@@ -24,8 +26,8 @@ function App() {
   const handleLogout = async () => {
     try {
       await axios.get('http://localhost:3001/logout', { withCredentials: true });
-      window.location.reload();
-      setLoggedOut(true);
+      setLoggedIn(false);
+      
     } catch (error) {
       console.error("Error logging out:", error.response.data.error);
     }
@@ -43,7 +45,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar handleLogout={handleLogout} userPoints={points} />
+        <Navbar loggedIn={loggedIn} handleLogout={handleLogout} userPoints={points} />
 
         <Routes>
           <Route path="/" element={<Home />} />

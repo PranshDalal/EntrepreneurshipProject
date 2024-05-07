@@ -1,12 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Cookies from "js-cookie"
 
 import './Navbar.css'
 
-const Navbar = ({ handleLogout, userPoints }) => {
-    const sessionCookieExists = Cookies.get('session') !== undefined;
-
+const Navbar = ({ loggedIn, handleLogout, userPoints }) => {
     const commonItems = (
         <>
             <li>
@@ -64,7 +61,7 @@ const Navbar = ({ handleLogout, userPoints }) => {
         <nav className="navbar">
             <ul>
                 {commonItems}
-                {sessionCookieExists ? loggedInItems : guestItems}
+                {loggedIn ? loggedInItems : guestItems}
             </ul>
         </nav>
     );
