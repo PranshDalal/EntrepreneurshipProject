@@ -11,7 +11,7 @@ import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
 import TicTacToeGame from './Pages/TicTacToe/TicTacToe';
 import Leaderboard from './Pages/Leaderboard/Leaderboard';
-
+import Hangman from './Pages/Hangman/Hangman';
 
 import './App.css';
 
