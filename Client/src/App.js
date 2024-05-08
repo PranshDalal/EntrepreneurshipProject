@@ -12,6 +12,7 @@ import Register from './Pages/Register/Register';
 import TicTacToeGame from './Pages/TicTacToe/TicTacToe';
 import Leaderboard from './Pages/Leaderboard/Leaderboard';
 import Hangman from './Pages/Hangman/Hangman';
+import Streak from './Pages/Streak/Streak';
 
 import './App.css';
 
@@ -61,6 +62,7 @@ function App() {
             <Route path='/leaderboard' element={<Leaderboard />} />
             <Route path="/tictactoe" element={<TicTacToeGame />} />
             <Route path="/hangmangame" element={<Hangman />} />
+            <Route path="/streak" element={<Streak />} />
 
           </Routes>
         </div>
