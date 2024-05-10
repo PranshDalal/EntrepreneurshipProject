@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from "js-cookie";
 
-import Navbar from './Components/Navbar';
+import Navbar from './Components/Navbar/Navbar';
 
 import Home from './Pages/Home/Home';
 import Questions from './Pages/Quiz/Questions';

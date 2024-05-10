@@ -112,13 +112,22 @@ questions = {
     
 }
 
+def generate_questions(question_type, category, difficulty, amount=1):
+    response = requests.get(f"{base_url}?amount={amount}&type={question_type}&category={category}&difficulty={difficulty}").json()
+
+    return response
+
 # Category must be a number. Type is either "boolean" or "multiple"
 # Example request: /api/question/multiple/25/easy
-@app.route("/api/question/<question_type>/<category>/<difficulty>", methods=["GET"])
-def question(question_type, category, difficulty):
+@app.route("/api/question/<question_type>/<category>/<difficulty>", defaults={'amount': 5}, methods=["GET"])
+@app.route("/api/question/<question_type>/<category>/<difficulty>/<amount>", methods=["GET"])
+def question(question_type, category, difficulty, amount):
     i = 0
+    max_questions = amount
+
     if request.method == "GET":
-        response = requests.get(f"{base_url}?amount=5&type={question_type}&category={category}&difficulty={difficulty}").json()
+        response = generate_questions(question_type, category, difficulty, amount)
+        # response = requests.get(f"{base_url}?amount={amount}&type={question_type}&category={category}&difficulty={difficulty}").json()
 
         response_code = response['response_code']
 
@@ -130,7 +139,7 @@ def question(question_type, category, difficulty):
         
         response_question = response['results'][0]
 
-        while i<5:
+        while i < max_questions:
             response_q = response['results'][i]
             questions[response_q["question"]] = response_q["correct_answer"]
             i += 1
@@ -395,9 +404,71 @@ def guess():
         else:
             return jsonify({"message": "Incorrect guess!", "hangman_word_state": hangman_word_state, "hangman_figure": hangman_figure[:incorrect_guesses + 1]}), 200
 
+def streaks_next_question():
+    session['streaks_current_question'] = session['streaks_generated_questions'][0]
+    session['streaks_generated_questions'].pop(0);
+    session['streaks_correct_answer'] = session.get('streaks_current_question')['correct_answer']
 
+@app.route("/api/streaks/response", methods=['GET', 'POST'])
+def streaks():
+    if request.method == 'GET':
+        if session.get('streaks_generated_questions') is None:
+            generated_questions = generate_questions("multiple", 9, "easy", 50)
 
+            if generated_questions['response_code'] == 0:
+                session['streaks_generated_questions'] = generated_questions['results']
+            
+            else:
+                return jsonify({
+                    "response_code": generated_questions.response_code,
+                    "response_code_message": response_code_messages[generated_questions.response_code],
+                })
+        
+        if session.get('current_streak') is None:
+            session['current_streak'] = 0
+
+        if session.get('streaks_current_question') is None:
+            streaks_next_question()
+
+        combined_answers = session.get('streaks_current_question')['incorrect_answers'] + [session.get('streaks_current_question')['correct_answer']]
+        random.shuffle(combined_answers)
+
+        return jsonify({
+            'question': session.get('streaks_current_question')['question'],
+            'possible_answers': combined_answers,
+            'current_streak': session.get('current_streak')
+        })
     
+    elif request.method == "POST":
+        data = request.get_json()
+        question = data.get('question')
+        answer = data.get('answer')
+
+        correct_answer = session['streaks_correct_answer']
+        if answer.lower() == correct_answer.lower():
+            session['current_streak'] += 1
+            streaks_next_question()
+
+            return jsonify({
+                'message': 'Correct answer.',
+                'current_streak': session.get('current_streak'),
+                'question': session.get('streaks_current_question')
+            }), 200
+        else:
+            session['current_streak'] = 0
+            streaks_next_question()
+            return jsonify({
+                'message': 'Incorrect answer. Streak reset to 0.',
+                'current_streak': session.get('current_streak'),
+                'question': session.get('streaks_current_question')
+            }), 400
+
+@app.route("/api/streaks/restart", methods=['POST'])
+def restart_streaks():
+    session['current_streak'] = 0
+    session['streaks_current_question'] = None
+    session['streaks_generated_questions'] = None
+    return jsonify({"message": "Streaks game restarted successfully"})
 
 if __name__ == "__main__":
     app.run(debug=True, port=3001)

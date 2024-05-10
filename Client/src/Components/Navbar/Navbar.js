@@ -37,6 +37,11 @@ const Navbar = ({ loggedIn, handleLogout, userPoints }) => {
         </NavLink>
       </li>
       <li>
+        <NavLink to="/streaks" activeClassName="active">
+          Streaks
+        </NavLink>
+      </li>
+      <li>
         <span className="points-text">Points: {userPoints}</span>
       </li>
       <li>
