@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import Axios
+import axios from 'axios'; 
 import './Hangman.css';
+import { decode } from 'html-entities';
 
 function Hangman() {
   const [hangmanWordState, setHangmanWordState] = useState([]);
@@ -10,6 +11,7 @@ function Hangman() {
   const [responseMessage, setResponseMessage] = useState('');
   const [question, setQuestion] = useState('');
   const [showInstructions, setShowInstructions] = useState(false);
+  const [answer, setAnswer] = useState('');
 
   useEffect(() => {
     startNewGame();
@@ -22,14 +24,15 @@ function Hangman() {
     setGuess('');
     setResponseMessage('');
     setQuestion('');
+    setAnswer('');
 
-    axios.get("http://localhost:3001/api/hangman/start", { withCredentials: true }) // Use axios.get
+    axios.get("http://localhost:3001/api/hangman", { params: { action: "start" } }) 
       .then(res => {
         setHangmanWordState(res.data.hangman_word_state);
       })
       .catch(error => console.error('Error starting new game:', error));
 
-    axios.get("http://localhost:3001/api/hangman/start_with_question")
+    axios.get("http://localhost:3001/api/hangman", { params: { action: "start_with_question" } })
       .then(res => {
         setQuestion(res.data.question);
       })
@@ -45,8 +48,8 @@ function Hangman() {
       setResponseMessage('Invalid guess. Please enter a single letter.');
       return;
     }
-
-    axios.post("http://localhost:3001/api/hangman/guess", { guess: guess.toUpperCase() }) 
+  
+    axios.post("http://localhost:3001/api/hangman", { guess: guess }) 
       .then(res => {
         const data = res.data;
         if (data.message === 'You already guessed that letter.') {
@@ -58,17 +61,19 @@ function Hangman() {
           setResponseMessage(data.message);
           setHangmanWordState(data.hangman_word_state);
           setHangmanFigure(data.hangman_figure);
+          setAnswer(data.hangman_word)
         } else if (data.message === 'Incorrect guess!') {
           setResponseMessage(data.message);
           setHangmanWordState(data.hangman_word_state);
           setHangmanFigure(data.hangman_figure);
           setIncorrectGuesses(prev => prev + 1);
         }
-
+  
         setGuess('');
       })
       .catch(error => console.error('Error making guess:', error));
   };
+  
 
   return (
     <div className="hangman-container">
@@ -84,7 +89,7 @@ function Hangman() {
         </div>
       )}
       <div className="hangman-question">
-        <p>{question}</p>
+        <p>{decode(question)}</p>
       </div>
       <div className="hangman-figure">
         {hangmanFigure.map((line, index) => (
@@ -94,20 +99,24 @@ function Hangman() {
       <div className="hangman-word">
         {hangmanWordState.map((letter, index) => (
           <span key={index} className="hangman-letter">
-            {letter === '_' ? ' ' : letter}
+            {letter === ' ' ? <span>&nbsp;</span> : letter}
           </span>
         ))}
       </div>
+
       <div className="hangman-input">
         <input
           type="text"
           value={guess}
-          onChange={(e) => setGuess(e.target.value.toUpperCase())}
+          onChange={(e) => setGuess(e.target.value)}
           placeholder="Enter your guess..."
         />
         <button className="submit-btn" onClick={handleGuess}>Guess</button>
       </div>
       <p className="response-message">{responseMessage}</p>
+      {responseMessage === 'Game over. You lost!' && (
+      <p>The answer was: {answer}</p>
+      )}
       <div className="hangman-guess-count">
         <p>Incorrect Guesses: {incorrectGuesses}</p>
       </div>
@@ -115,6 +124,7 @@ function Hangman() {
         <button className="new-game-btn" onClick={startNewGame}>Start New Game</button>
       )}
     </div>
+    
   );
 }
 
