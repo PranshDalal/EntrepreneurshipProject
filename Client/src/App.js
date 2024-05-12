@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import Navbar from './Components/Navbar/Navbar';
 
 import Home from './Pages/Home/Home';
-import Questions from './Pages/Quiz/Questions';
+import Questions from './Components/Questions/Questions';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
 import TicTacToeGame from './Pages/TicTacToe/TicTacToe';

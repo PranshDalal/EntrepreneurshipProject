@@ -11,11 +11,6 @@ const Navbar = ({ loggedIn, handleLogout, userPoints }) => {
           Home
         </NavLink>
       </li>
-      <li>
-        <NavLink to="/questions" activeclassname="active">
-          Quiz
-        </NavLink>
-      </li>
     </>
   )
 

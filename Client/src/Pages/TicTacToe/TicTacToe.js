@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './TicTacToe.css';
 import { decode } from 'html-entities';
 import axios from 'axios';
+import Questions from '../../Components/Questions/Questions';
 
 function TicTacToeGame() {
   const [data, setData] = useState(null);
@@ -106,6 +107,7 @@ function TicTacToeGame() {
           <p>The first player to get three Xs or Os in a row (horizontally, vertically, or diagonally) wins the game.</p>
         </div>
       )}
+      <Questions />
       {data ? (
         <div className="game-container">
           <div className="game-info">

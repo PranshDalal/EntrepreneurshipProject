@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; 
 import './Hangman.css';
 import { decode } from 'html-entities';
+import Questions from '../../Components/Questions/Questions';
 
 function Hangman() {
   const [hangmanWordState, setHangmanWordState] = useState([]);
@@ -88,6 +89,7 @@ function Hangman() {
           <p>Good luck!</p>
         </div>
       )}
+      <Questions />
       <div className="hangman-question">
         <p>{decode(question)}</p>
       </div>

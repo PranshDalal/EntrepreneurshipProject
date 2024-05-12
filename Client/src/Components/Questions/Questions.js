@@ -55,6 +55,7 @@ const Questions = () => {
       setCategory('');
       setDifficulty('');
       setQuestionGenerated(true); 
+      window.location.reload()
     } catch (error) {
       console.error('Error fetching question:', error);
       setError('Failed to fetch question. Please try again.');
