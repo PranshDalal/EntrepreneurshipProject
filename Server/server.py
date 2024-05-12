@@ -395,6 +395,10 @@ def hangman():
 
         if make_guess(guess):
             if '_' not in hangman_word_state:
+                user_id = session.get("user_id")
+                user = User.query.get(user_id)
+                user.points += 25
+                db.session.commit()
                 return jsonify({"message": "Congratulations! You won!", "hangman_word": hangman_word, "hangman_word_state": hangman_word_state}), 200
             else:
                 return jsonify({"message": "Correct guess!", "hangman_word_state": hangman_word_state}), 200
@@ -448,6 +452,10 @@ def streaks():
 
         correct_answer = session['streaks_correct_answer']
         if answer.lower() == correct_answer.lower():
+            user_id = session.get("user_id")
+            user = User.query.get(user_id)
+            user.points += 10
+            db.session.commit()
             session['current_streak'] += 1
             streaks_next_question()
 
