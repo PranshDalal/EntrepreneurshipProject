@@ -32,10 +32,10 @@ function Streaks() {
       setQuestion(data.question);
       // setResponseMessage(data.message);
 
-      if (streak < data.current_streak) {
+      if (data.message === "Correct Answer.") {
         setResponseMessage("Correct!");
-      } else {
-        setResponseMessage("Incorrect!");
+      } else if (data.message === "Incorrect Answer. Streak reset to 0."){
+        setResponseMessage("Incorrect Answer. Streak reset to 0.");
       }
 
       setCurrentStreak(data.current_streak);

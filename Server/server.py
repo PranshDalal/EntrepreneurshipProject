@@ -463,7 +463,7 @@ def streaks():
                 'message': 'Correct answer.',
                 'current_streak': session.get('current_streak'),
                 'question': session.get('streaks_current_question')
-            }), 200
+            })
         else:
             session['current_streak'] = 0
             streaks_next_question()
@@ -471,7 +471,7 @@ def streaks():
                 'message': 'Incorrect answer. Streak reset to 0.',
                 'current_streak': session.get('current_streak'),
                 'question': session.get('streaks_current_question')
-            }), 400
+            })
 
 @app.route("/api/streaks/restart", methods=['POST'])
 def restart_streaks():
