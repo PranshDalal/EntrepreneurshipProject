@@ -212,6 +212,7 @@ def tictactoe_response():
 
         if question == current_question:
             correct_answer = questions.get(question)
+            print(correct_answer)
             if answer.lower() == correct_answer.lower():
                 user_id = session.get("user_id")
                 user = User.query.get(user_id)

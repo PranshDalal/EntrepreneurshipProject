@@ -88,7 +88,7 @@ function TicTacToeGame() {
     })
       .then(res => res.json())
       .then(() => {
-        fetchData(); // Fetch new game data after restarting
+        fetchData();
       })
       .catch(error => console.error('Error restarting game:', error));
   };
