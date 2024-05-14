@@ -33,12 +33,8 @@
     text-align: center;
     
   }
-
-  /* Register.css */
-
-.register-container {
-  max-width: 400px;
-  margin: 0 auto;
+.register-container h2 {
+  color: white;
 }
 
 .register-form {

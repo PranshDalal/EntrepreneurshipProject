@@ -31,6 +31,7 @@ body {
     transition: background-color 0.3s;
   }
   
+
   .how-to-play-btn:hover {
     background-color: #0056b3;
   }
@@ -42,7 +43,8 @@ body {
     max-width: 600px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #2f3d4b;
+    background-color: #f9f9f9;
+    position: absolute;
   }
   
   .instructions h3 {
@@ -51,8 +53,8 @@ body {
   
   .instructions p {
     margin-bottom: 10px;
+    color: black;
   }
-  
   .game-container {
     display: flex;
     flex-direction: column;

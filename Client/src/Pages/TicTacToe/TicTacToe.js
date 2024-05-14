@@ -107,7 +107,10 @@ function TicTacToeGame() {
           <p>The first player to get three Xs or Os in a row (horizontally, vertically, or diagonally) wins the game.</p>
         </div>
       )}
-      <Questions />
+      <div className="questions-container">
+        <Questions />
+      </div>
+        
       {data ? (
         <div className="game-container">
           <div className="game-info">

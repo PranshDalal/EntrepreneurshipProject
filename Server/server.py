@@ -199,11 +199,11 @@ def tictactoe_response():
         return jsonify({"error": "Please log in first"}), 401
 
 
-    if not session.get("questions") or current_question is None or request.method == 'GET':
-        if not session.get("questions"):
+    if not questions or current_question is None or request.method == 'GET':
+        if not questions:
             current_question = None
         else:
-            current_question = random.choice(list(session.get("questions").keys()))
+            current_question = random.choice(list(questions.keys()))
 
     if request.method == 'POST':
         data = request.get_json()
@@ -211,7 +211,7 @@ def tictactoe_response():
         answer = data.get('answer')
 
         if question == current_question:
-            correct_answer = session.get("questions").get(question)
+            correct_answer = questions.get(question)
             if answer.lower() == correct_answer.lower():
                 user_id = session.get("user_id")
                 user = User.query.get(user_id)
@@ -228,7 +228,7 @@ def tictactoe_response():
                     board[random_position] = 'X'
 
                     if check_win('X'):
-                        session["questions"].clear()
+                        questions.clear()
                         return jsonify({
                             'message': 'You win!',
                             'board': board,
@@ -236,7 +236,7 @@ def tictactoe_response():
                         }), 200
 
                     if is_board_full():
-                        session["questions"].clear()
+                        questions.clear()
                         return jsonify({
                             'message': 'It\'s a draw!',
                             'board': board,
@@ -249,7 +249,7 @@ def tictactoe_response():
                         board[computer_position] = 'O'
 
                         if check_win('O'):
-                            session["questions"].clear()
+                            questions.clear()
                             return jsonify({
                                 'message': 'Computer wins!',
                                 'board': board,
@@ -257,9 +257,9 @@ def tictactoe_response():
                             }), 200
 
                     current_player = 'X'
-                    current_question = random.choice(list(session.get(questions).keys()))
+                    current_question = random.choice(list(questions.keys()))
                 else:
-                    session["questions"].clear()
+                    questions.clear()
                     return jsonify({
                         'message': 'It\'s a draw!',
                         'board': board,
@@ -286,10 +286,10 @@ def restart_game():
     global current_player, current_question, board, questions
     
     current_player = 'X'
-    current_question = None
     board = [' '] * 9
     questions.clear()
 
+    current_question = None
     
     return jsonify({"message": "Game restarted successfully"}), 200
 
