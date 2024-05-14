@@ -27,7 +27,7 @@ function Hangman() {
     setQuestion('');
     setAnswer('');
 
-    axios.get("http://localhost:3001/api/hangman", { params: { action: "start" } }) 
+    axios.get("http://localhost:3001/api/hangman", { params: { action: "start" } }, {withCredentials: true}) 
       .then(res => {
         setHangmanWordState(res.data.hangman_word_state);
       })
@@ -50,7 +50,7 @@ function Hangman() {
       return;
     }
   
-    axios.post("http://localhost:3001/api/hangman", { guess: guess }) 
+    axios.post("http://localhost:3001/api/hangman", { guess: guess }, {withCredentials: true}) 
       .then(res => {
         const data = res.data;
         if (data.message === 'You already guessed that letter.') {
