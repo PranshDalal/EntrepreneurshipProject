@@ -346,6 +346,8 @@ def start_new_game():
         
     global hangman_word, hangman_word_state, hangman_figure, incorrect_guesses
     hangman_word = random.choice(words)
+    hangman_word = "".join(hangman_word.split())
+    print(hangman_word)
     hangman_word_state = ['_'] * len(hangman_word)
     incorrect_guesses = 0
 
