@@ -1,0 +1,4 @@
+.option-container {
+    display: flex;
+    flex-direction: column;
+}

@@ -23,7 +23,7 @@ const Home = () => {
 
       <p className="home-subtitle">Your journey continues...</p>
 
-      <Link to="/questions" className="get-started-button">Continue</Link>
+      <Link to="/hangman" className="get-started-button">Continue</Link>
     </>
   )
 

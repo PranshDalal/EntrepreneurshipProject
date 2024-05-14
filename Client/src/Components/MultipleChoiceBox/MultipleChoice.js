@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { decode } from 'html-entities';
 
+import './MultipleChoice.css';
+
 function MultipleChoice({ options, onAnswer }) {
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -15,6 +17,7 @@ function MultipleChoice({ options, onAnswer }) {
       <div className="options-container">
         {options.map((option, index) => (
           <label key={index} className="option-label">
+            <span className="option-text">{decode(option)}</span>
             <input
               type="radio"
               value={decode(option)}
@@ -22,7 +25,6 @@ function MultipleChoice({ options, onAnswer }) {
               onChange={() => setSelectedOption(option)}
               className="option-input"
             />
-            <span className="option-text">{option}</span>
           </label>
         ))}
       </div>
