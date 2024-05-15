@@ -342,15 +342,7 @@ incorrect_guesses = 0
 max_attempts = 6
 
 def start_new_game():
-    for question, answer in questions.items():
-        words.append(answer.upper())
-        
-    global hangman_word, hangman_word_state, hangman_figure, incorrect_guesses
-    hangman_word = random.choice(words)
-    hangman_word = "".join(hangman_word.split())
-    print(hangman_word)
-    hangman_word_state = ['_'] * len(hangman_word)
-    incorrect_guesses = 0
+    pass
 
 
 def make_guess(guess):
@@ -372,11 +364,16 @@ def hangman():
         action = request.args.get('action')
 
         if action == 'start':
-            start_new_game()
+            question, answer = random.choice(list(questions.items()))
+            hangman_word = (answer.replace(" ", "")).lower()
+            print(hangman_word)
+            hangman_word_state = ['_'] * len(hangman_word)
+            incorrect_guesses = 0
             return jsonify({"message": "New game started.", "hangman_word_state": hangman_word_state})
         elif action == 'start_with_question':
             question, answer = random.choice(list(questions.items()))
-            hangman_word = answer.lower()
+            hangman_word = (answer.replace(" ", "")).lower()
+            print(hangman_word)
             hangman_word_state = ['_'] * len(hangman_word)
             incorrect_guesses = 0
             return jsonify({"message": "New game started with a question.", "question": question, "hangman_word_state": hangman_word_state})
@@ -387,8 +384,8 @@ def hangman():
         data = request.get_json()
         guess = data.get('guess', '')
 
-        if not guess.isalpha() or len(guess) != 1:
-            return jsonify({"error": "Invalid guess. Please enter a single letter."}), 400
+        if len(guess) != 1:
+            return jsonify({"error": "Invalid guess. Please enter something."}), 400
 
         if not hangman_word:
             return jsonify({"error": "Game has not started. Please start a new game."}), 400
@@ -402,12 +399,16 @@ def hangman():
                 user = User.query.get(user_id)
                 user.points += 25
                 db.session.commit()
+                words.clear()
                 return jsonify({"message": "Congratulations! You won!", "hangman_word": hangman_word, "hangman_word_state": hangman_word_state}), 200
+
             else:
                 return jsonify({"message": "Correct guess!", "hangman_word_state": hangman_word_state}), 200
         else:
             if incorrect_guesses >= max_attempts:
+                words.clear()
                 return jsonify({"message": "Game over. You lost!", "hangman_word": hangman_word, "hangman_word_state": hangman_word_state, "hangman_figure": hangman_figure}), 200
+
             else:
                 return jsonify({"message": "Incorrect guess!", "hangman_word_state": hangman_word_state, "hangman_figure": hangman_figure[:incorrect_guesses + 1]}), 200
 

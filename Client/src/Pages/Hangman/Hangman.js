@@ -26,13 +26,13 @@ function Hangman() {
     setResponseMessage('');
     setQuestion('');
     setAnswer('');
-
+  
     axios.get("http://localhost:3001/api/hangman", { params: { action: "start" } }, {withCredentials: true}) 
       .then(res => {
-        setHangmanWordState(res.data.hangman_word_state);
+        setHangmanWordState(res.data.hangman_word_state.replace(/\s/g, ''));
       })
       .catch(error => console.error('Error starting new game:', error));
-
+  
     axios.get("http://localhost:3001/api/hangman", { params: { action: "start_with_question" } })
       .then(res => {
         setQuestion(res.data.question);
@@ -45,7 +45,7 @@ function Hangman() {
   };
 
   const handleGuess = () => {
-    if (!guess.trim().match(/^[A-Za-z]$/)) {
+    if (!guess.trim().match(/^[A-Za-z0-9]$/)) {
       setResponseMessage('Invalid guess. Please enter a single letter.');
       return;
     }
@@ -113,7 +113,7 @@ function Hangman() {
           onChange={(e) => setGuess(e.target.value)}
           placeholder="Enter your guess..."
         />
-        <button className="submit-btn" onClick={handleGuess}>Guess</button>
+        <button className="submit-btn" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }} onClick={handleGuess}>Guess</button>
       </div>
       <p className="response-message">{responseMessage}</p>
       {responseMessage === 'Game over. You lost!' && (
