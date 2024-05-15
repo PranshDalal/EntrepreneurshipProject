@@ -11,7 +11,7 @@ A revolutionary gamified learning app
 ## Requirements
 
 * python 3.10 or higher
-* NPM
+* npm
 
 ## Installation
 
