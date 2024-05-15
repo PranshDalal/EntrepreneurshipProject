@@ -16,7 +16,7 @@ A revolutionary gamified learning app. Made by Nathan Apte and Pransh Dalal as o
 ## Installation
 
 Run `npm install` in `Client` \
-Run `pip install -r requirements.txt` in `Server`
+Run `pip install -r requirements.txt` in `Server` (windows)
 
 ## Usage
 
