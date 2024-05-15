@@ -1,6 +1,6 @@
 # Quiz Quest
 
-A revolutionary gamified learning app. Made by Nathan Apte and Pransh Dalal as our entrepreneurship project 2024.
+A revolutionary gamified learning app. Made by Nathan Apte and Pransh Dalal as our 2024 entrepreneurship project.
 
 ## Table of Contents
 
