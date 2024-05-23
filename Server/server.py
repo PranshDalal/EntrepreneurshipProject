@@ -191,13 +191,11 @@ def computer_move():
 
 @app.route("/api/tictactoe/response", methods=['GET', 'POST'])
 def tictactoe_response():
-
     global current_player, current_question, board
     session.modified = True
-    print(session.get("user_id"))
+    
     if not session.get("user_id"):
         return jsonify({"error": "Please log in first"}), 401
-
 
     if not questions or current_question is None or request.method == 'GET':
         if not questions:
@@ -209,65 +207,60 @@ def tictactoe_response():
         data = request.get_json()
         question = data.get('question')
         answer = data.get('answer')
+        move_position = data.get('move_position')
 
         if question == current_question:
             correct_answer = questions.get(question)
-            print(correct_answer)
             if answer.lower() == correct_answer.lower():
                 user_id = session.get("user_id")
                 user = User.query.get(user_id)
                 user.points += 10
                 db.session.commit()
-                print(user.points)
 
-                current_player = 'X'
-                current_question = None
-
-                empty_cells = [index for index, cell in enumerate(board) if cell == ' ']
-                if empty_cells:
-                    random_position = random.choice(empty_cells)
-                    board[random_position] = 'X'
-
-                    if check_win('X'):
-                        questions.clear()
-                        return jsonify({
-                            'message': 'You win!',
-                            'board': board,
-                            'question': None
-                        }), 200
-
-                    if is_board_full():
-                        questions.clear()
-                        return jsonify({
-                            'message': 'It\'s a draw!',
-                            'board': board,
-                            'question': None
-                        }), 200
-
-                    current_player = 'O'
-                    computer_position = computer_move()
-                    if computer_position is not None:
-                        board[computer_position] = 'O'
-
-                        if check_win('O'):
-                            questions.clear()
-                            return jsonify({
-                                'message': 'Computer wins!',
-                                'board': board,
-                                'question': None
-                            }), 200
-
-                    current_player = 'X'
-                    current_question = random.choice(list(questions.keys()))
+                if move_position is not None and board[move_position] == ' ':
+                    board[move_position] = 'X'
                 else:
+                    return jsonify({
+                        'message': 'Invalid move. Try again.',
+                        'board': board,
+                        'question': current_question
+                    }), 400
+
+                if check_win('X'):
+                    questions.clear()
+                    user_id = session.get("user_id")
+                    user = User.query.get(user_id)
+                    user.points += 20
+                    db.session.commit()
+                    return jsonify({
+                        'message': 'You win!',
+                        'board': board,
+                        'question': None
+                    }), 200
+
+                if is_board_full():
                     questions.clear()
                     return jsonify({
                         'message': 'It\'s a draw!',
                         'board': board,
                         'question': None
                     }), 200
-                
-                
+
+                current_player = 'O'
+                computer_position = computer_move()
+                if computer_position is not None:
+                    board[computer_position] = 'O'
+
+                    if check_win('O'):
+                        questions.clear()
+                        return jsonify({
+                            'message': 'Computer wins!',
+                            'board': board,
+                            'question': None
+                        }), 200
+
+                current_player = 'X'
+                current_question = random.choice(list(questions.keys()))
             else:
                 return jsonify({
                     'message': 'Incorrect answer. Try again.',
@@ -276,7 +269,7 @@ def tictactoe_response():
                 }), 400
 
     return jsonify({
-        'message': 'Answer the question to place your X or O.',
+        'message': 'Write the answer to the question and select a box to place your X',
         'question': current_question,
         'board': board,
         'currentPlayer': current_player

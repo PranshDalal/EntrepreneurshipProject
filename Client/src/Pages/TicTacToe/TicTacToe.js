@@ -34,7 +34,8 @@ function TicTacToeGame() {
       credentials: 'include',
       body: JSON.stringify({
         question: data.question,
-        answer: answer
+        answer: answer,
+        move_position: selectedBox
       })
     })
       .then(res => res.json())
@@ -47,30 +48,8 @@ function TicTacToeGame() {
       .catch(error => console.error('Error submitting answer:', error));
   };
 
-  const handleBoxSelection = () => {
-    if (selectedBox !== -1) {
-      fetch("http://localhost:3001/api/tictactoe/response", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          question: '',
-          answer: '',
-          position: selectedBox
-        })
-      })
-        .then(res => res.json())
-        .then(data => {
-          setData(data);
-          setSelectedBox(-1);
-        })
-        .catch(error => console.error('Error updating Tic Tac Toe board:', error));
-    }
-  };
-
   const handleCellClick = (index) => {
-    if (!data.question && !data.board[index].trim()) {
+    if (!data.board[index].trim() && data.question) {
       setSelectedBox(index);
     }
   };
@@ -94,17 +73,17 @@ function TicTacToeGame() {
   };
 
   return (
-
     <div className="container">
       <h1 className="header">Tic Tac Toe</h1>
       <button className="how-to-play-btn" onClick={toggleInstructions}>How to Play</button>
       {showInstructions && (
         <div className="instructions">
           <h3>How to Play</h3>
-          <p>Answer the question to place your X or O.</p>
-          <p>After answering a question, an X will be randomly placed on the board.</p>
-          <p>The computer (O) will take its turn automatically.</p>
-          <p>The first player to get three Xs or Os in a row (horizontally, vertically, or diagonally) wins the game.</p>
+          <p>Answer the question to get a chance to make a move</p>
+          <p>After answering a question, select a box and press the place x button</p>
+          <p>If the answer is incorrect, you will get more chances to answer it again</p>
+          <p>The computer will make its move automatically</p>
+          <p>The game will continue until you or the computer wins, or a draw</p>
         </div>
       )}
       <div className="questions-container">
@@ -125,7 +104,6 @@ function TicTacToeGame() {
                   onChange={e => setAnswer(e.target.value)}
                   placeholder="Your answer..."
                 />
-                <button className="submit-btn" onClick={handleAnswerSubmit}>Submit Answer</button>
               </div>
             )}
             <p className="response-message">{responseMessage}</p>
@@ -141,8 +119,8 @@ function TicTacToeGame() {
               </div>
             ))}
           </div>
-          {data.question && !selectedBox && <p>Select a box to place your X</p>}
-          {selectedBox !== -1 && <button className="submit-btn" onClick={handleBoxSelection}>Place X</button>}
+          {data.question && selectedBox === -1 && <p>Select a box to place your X</p>}
+          {selectedBox !== -1 && <button className="submit-btn" onClick={handleAnswerSubmit}>Place X</button>}
         </div>
       ) : (
         <p>Loading data...</p>
