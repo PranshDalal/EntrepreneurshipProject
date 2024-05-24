@@ -415,7 +415,7 @@ def streaks_next_question():
 @app.route("/api/streaks/response", methods=['GET', 'POST'])
 def streaks():
     if request.method == 'GET':
-        if session.get('streaks_generated_questions') is None:
+        if session.get('streaks_generated_questions') is None or len(session.get('streaks_generated_questions')) < 2:
             generated_questions = generate_questions("multiple", 9, "easy", 50)
 
             if generated_questions['response_code'] == 0:
