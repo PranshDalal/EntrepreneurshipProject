@@ -83,7 +83,7 @@ function Hangman() {
       {showInstructions && (
         <div className="instructions">
           <h3>How to Play</h3>
-          <p>Guess the word by entering one letter at a time into the input field.</p>
+          <p>Guess the word by entering one letter at a time into the input field. Be careful- it is case sensitive!</p>
           <p>You have 6 incorrect guesses before the game is over.</p>
           <p>Keep guessing until you either complete the word or run out of incorrect guesses.</p>
           <p>Good luck!</p>
@@ -109,6 +109,7 @@ function Hangman() {
       <div className="hangman-input">
         <input
           type="text"
+          className='guess-input'
           value={guess}
           onChange={(e) => setGuess(e.target.value)}
           placeholder="Enter your guess..."
