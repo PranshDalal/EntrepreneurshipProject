@@ -457,7 +457,7 @@ def streaks():
             streaks_next_question()
 
             return jsonify({
-                'message': 'Correct answer.',
+                'message': 'Correct!',
                 'current_streak': session.get('current_streak'),
                 'question': session.get('streaks_current_question')
             })

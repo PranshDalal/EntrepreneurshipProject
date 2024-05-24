@@ -4,6 +4,9 @@ import { decode } from 'html-entities';
 
 import MultipleChoice from '../../Components/MultipleChoiceBox/MultipleChoice';
 
+import './Streaks.css';
+import Questions from '../../Components/Questions/Questions';
+
 function Streaks() {
   const [data, setData] = useState(null);
   const [question, setQuestion] = useState('');
@@ -30,13 +33,6 @@ function Streaks() {
 
       setAnswers(data.answers);
       setQuestion(data.question);
-      // setResponseMessage(data.message);
-
-      if (data.message === "Correct Answer.") {
-        setResponseMessage("Correct!");
-      } else if (data.message === "Incorrect Answer. Streak reset to 0."){
-        setResponseMessage("Incorrect Answer. Streak reset to 0.");
-      }
 
       setCurrentStreak(data.current_streak);
     })
@@ -56,6 +52,7 @@ function Streaks() {
     })
     .then(res => res.json())
       .then(data => {
+        setResponseMessage(data.message);
         fetchData();
       })
     }
@@ -74,8 +71,8 @@ function Streaks() {
   }
 
   return (
-    <div className='container'>
-      <h1 className='header'>Streaks Page</h1>
+    <div className='streaks-container'>
+      <h1 className='header'>Streaks</h1>
       <button className='how-to-play-btn' onClick={() => setShowInstructions(!showInstructions)}>How to Play</button>
       {showInstructions && (
         <div className='instructions'>
@@ -86,13 +83,16 @@ function Streaks() {
         </div>
       )}
       {data ? (
-        <div className='game-container'>
-          <div className='game-info-container'>
-            <button className='restart-btn' onClick={restartGame}>Restart Game</button>
-            <p className='question center'>Current Streak: {streak}</p>
+        <div className='streaks-game-container'>
+          <div className='streaks-game-info-container'>
+            <button className='streaks-restart-button' onClick={restartGame}>Restart Game</button>
+            <div className='question center'>
+
+              <h5 className='text-primary'>Current Streak: {streak}</h5>
             <p>{data.message}</p>
-            {data.question && <p className='question'>{decode(question)}</p>}
+              {data.question && <h3 className='text-primary'>{decode(question)}</h3>}
             <p className="response-message center">{responseMessage}</p>
+            </div>
             <MultipleChoice options={data.possible_answers} onAnswer={handleAnswerSubmit} />
           </div>
         </div>

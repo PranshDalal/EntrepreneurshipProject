@@ -11,24 +11,31 @@ function MultipleChoice({ options, onAnswer }) {
     onAnswer(selectedOption);
   };
 
+  function handleChange(option) {
+    setSelectedOption(option);
+  }
+
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="options-container">
         {options.map((option, index) => (
-          <label key={index} className="option-label">
-            <span className="option-text">{decode(option)}</span>
+          <div key={index}>
             <input
+              id={`option-${index}`}
               type="radio"
-              value={decode(option)}
+              value={option}
               checked={selectedOption === option}
-              onChange={() => setSelectedOption(option)}
+              onChange={() => handleChange(option)}
               className="option-input"
             />
-          </label>
+            <label htmlFor={`option-${index}`} className="option-label">
+              <span className="option-text">{decode(option)}</span>
+            </label>
+          </div>
         ))}
       </div>
-      <button type="submit" className="submit-button">Submit</button>
+      <button type="submit" className="streaks-submit-button">Submit</button>
     </form>
   );
 }
